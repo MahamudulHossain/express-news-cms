@@ -8,7 +8,7 @@ const expressLayouts = require('express-ejs-layouts');
 require('dotenv').config();
 
 
-
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -20,8 +20,15 @@ app.use(flash());
 
 mongoose.connect(process.env.MONGO_URL);
 
-app.get('/', (req, res) => {
- res.render('search');
+const adminLayoutMiddleware = (req, res, next) => {
+    res.locals.layout = 'admin/layout'; 
+    next();
+};
+
+// Apply it to all routes starting with /admin
+app.use('/admin', adminLayoutMiddleware);
+app.get('/admin', (req, res) => {
+ res.render('admin/dashboard');
 });
 
 const port = process.env.PORT || 3000;
