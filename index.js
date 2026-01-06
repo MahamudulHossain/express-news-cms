@@ -21,7 +21,7 @@ app.use(flash());
 mongoose.connect(process.env.MONGO_URL);
 
 app.get('/', (req, res) => {
- res.send('<h1>Hello World</h1>');
+ res.render('search');
 });
 
 const port = process.env.PORT || 3000;
