@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const userModel = require('../models/User');
 
 const login = async(req, res) => {
     return res.render('admin/login', {layout: false});
