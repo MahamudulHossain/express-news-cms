@@ -20,16 +20,16 @@ app.use(flash());
 
 mongoose.connect(process.env.MONGO_URL);
 
+app.use('/', require('./routes/frontend'));
+
 const adminLayoutMiddleware = (req, res, next) => {
     res.locals.layout = 'admin/layout'; 
     next();
 };
 
 // Apply it to all routes starting with /admin
-app.use('/admin', adminLayoutMiddleware);
-app.get('/admin', (req, res) => {
- res.render('admin/dashboard');
-});
+app.use('/admin', adminLayoutMiddleware, require('./routes/admin'));
+
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

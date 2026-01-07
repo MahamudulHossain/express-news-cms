@@ -1,13 +1,13 @@
-import express from "express"
+const express = require('express')
 const router = express.Router()
 
-const siteController = require('../controllers/site.controller')
+const siteController = require('../controllers/siteController')
 
-router.get('/', siteController.index());
-router.get('/author/:id', siteController.newsAuthor());
-router.get('/category/:name', siteController.newsCategory());
-router.get('/single/:id', siteController.singleNews());
-router.get('/search/:id', siteController.searchNews());
-router.post('/single/:id', siteController.addComment());
+router.get('/', siteController.index);
+router.get('/author/:id', siteController.newsByAuthor);
+router.get('/category/:name', siteController.newsByCategory);
+router.get('/single/:id', siteController.singleNews);
+router.get('/search/:id', siteController.searchNews);
+router.post('/single/:id', siteController.addComment);
 
-export default router
+module.exports = router

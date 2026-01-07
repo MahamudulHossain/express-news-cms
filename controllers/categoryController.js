@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
-const categoryModel = mongoose.model('../models/Category');
 
 const categoryIndex = async (req, res) => {
-
+    return res.render('admin/category/index');
 }
 
 const categoryCreate = async (req, res) => {
-
+    return res.render('admin/category/create');
 }
 
 const categoryStore = async (req, res) => { 

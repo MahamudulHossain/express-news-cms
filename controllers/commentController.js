@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 
-const commentModel = mongoose.model('../models/Comment');
-
 const commentIndex = async(req, res) => {
-
+    return res.render('admin/comments/index');
 }
 
 const commentUpdate = async(req, res) => {

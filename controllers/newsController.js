@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 
-const newsModel = mongoose.model('../models/News');
-
 const newsIndex = async(req, res) => {
-    
+    return res.render('admin/article/index');
 }
 
 const newsCreate = async(req, res) => {
-    
+    return res.render('admin/article/create');
 }
 
 const newsStore = async(req, res) => {

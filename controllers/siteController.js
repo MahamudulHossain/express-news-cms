@@ -1,15 +1,12 @@
 const mongoose = require('mongoose');
 
-const newsModel = mongoose.model('../models/News');
-const categoryModel = mongoose.model('../models/Category');
-const userModel = mongoose.model('../models/User');
 
 const index = async(req, res) => {
-    
+    return res.render('index');
 }
 
 const newsByCategory = async(req, res) => {
-    
+   
 }
 
 const newsByAuthor = async(req, res) => {
