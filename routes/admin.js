@@ -17,7 +17,7 @@ router.get('/user', userController.userIndex);
 router.get('/user/create', userController.userCreate);
 router.post('/user/store', userController.userStore);
 router.get('/user/edit/:id', userController.userEdit);
-router.post('/user/update', userController.userUpdate);
+router.post('/user/update/:id', userController.userUpdate);
 router.delete('/user/delete/:id', userController.userDelete);
 
 // News CRUD

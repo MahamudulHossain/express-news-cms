@@ -39,11 +39,34 @@ const userStore = async(req, res) => {
 }
 
 const userEdit = async(req, res) => {
-    
+    try{
+        const user = await userModel.findById(req.params.id);
+        if(!user){
+            return res.status(404).json({message: 'User not found'});
+        }
+        return res.render('admin/user/update', {user});
+    }catch(err){
+        return res.status(500).json({message: err.message});
+    }
 }
 
 const userUpdate = async(req, res) => {
-    
+    try{
+        const user = await userModel.findById(req.params.id);
+        if(!user){
+            return res.status(404).json({message: 'User not found'});
+        }
+        user.fullname = req.body.fullname;
+        user.username = req.body.username;
+        if(req.body.password){
+            user.password = req.body.password;
+        }
+        user.role = req.body.role;
+        await user.save();
+        return res.redirect('/admin/user');
+    }catch(err){
+        return res.status(500).json({message: err.message});
+    }
 }
 
 const userDelete = async(req, res) => {
