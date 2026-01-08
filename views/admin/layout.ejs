@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="/css/font-awesome.css">
     <!-- Custom stlylesheet -->
     <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Conditionally render the stylesheet for tabulator -->
+    <%- typeof tabulatorCss !== 'undefined' ? tabulatorCss : '' %>
+
   </head>
   <body>
     <!-- HEADER -->

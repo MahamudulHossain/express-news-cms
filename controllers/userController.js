@@ -18,7 +18,8 @@ const logout = async(req, res) => {
 }
 
 const userIndex = async(req, res) => {
-    return res.render('admin/user/index');
+    const users = await userModel.find();
+    return res.render('admin/user/index', {users});
 }
 
 const userCreate = async(req, res) => {
@@ -26,7 +27,15 @@ const userCreate = async(req, res) => {
 }
 
 const userStore = async(req, res) => {
-    
+    try{
+        const {fullname,username, password, role} = req.body;
+        const user = await userModel.create({fullname, username, password, role});
+        if(user){
+            return res.redirect('/admin/user');
+        }
+    }catch(err){
+        return res.status(500).json({message: err.message});
+    }
 }
 
 const userEdit = async(req, res) => {
@@ -38,6 +47,14 @@ const userUpdate = async(req, res) => {
 }
 
 const userDelete = async(req, res) => {
+    try{
+        const user = await userModel.findByIdAndDelete(req.params.id);
+        if(user){
+            return  res.json({msg:true});
+        }
+    }catch(err){
+        return res.status(500).json({message: err.message});
+    }
     
 }
 
