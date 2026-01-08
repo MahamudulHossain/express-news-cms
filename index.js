@@ -3,7 +3,7 @@ const app = express();
 const mongoose = require('mongoose');
 const path = require('path');
 const flash = require('connect-flash');
-const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const expressLayouts = require('express-ejs-layouts');
 require('dotenv').config();
 
@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(expressLayouts);
 app.set('layout', 'layout');
 app.use(flash());
+app.use(cookieParser());
 
 
 mongoose.connect(process.env.MONGO_URL);

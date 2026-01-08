@@ -1,12 +1,28 @@
 const mongoose = require('mongoose');
 const userModel = require('../models/User');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+const bcrypt = require('bcrypt');
+
+dotenv.config();
 
 const login = async(req, res) => {
     return res.render('admin/login', {layout: false});
 }
 
 const adminLogin = async(req, res) => {
-    
+    const {username, password} = req.body;
+    const user = await userModel.findOne({username});
+    if(!user){
+        return res.status(404).json({message: 'User not found'});
+    }
+    const isMatched = await bcrypt.compare(password, user.password);
+    if(!isMatched){
+        return res.status(401).json({message: 'Invalid Password'});
+    }
+    const token = jwt.sign({id: user._id, fullname: user.fullname,role: user.role}, process.env.JWT_SECRET, {expiresIn: '1d'});
+    res.cookie('token', token, {httpOnly: true, maxAge: 60 * 60 * 1000});
+    return res.redirect('/admin/dashboard');
 }
 
 const dashboard = async(req, res) => {
@@ -14,7 +30,12 @@ const dashboard = async(req, res) => {
 }
 
 const logout = async(req, res) => {
-    
+    const token = req.cookies.token;
+    if(!token){
+        return res.redirect('/admin/login');
+    }
+    res.clearCookie('token');
+    return res.redirect('/admin');
 }
 
 const userIndex = async(req, res) => {
