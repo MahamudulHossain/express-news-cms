@@ -6,73 +6,50 @@
         <a class="add-new" href="category/create">add category</a>
     </div>
     <div class="col-md-12">
-        <table class="content-table">
-            <thead>
-                <th>S.No.</th>
-                <th>Category Name</th>
-                <th>No. of Article</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class='id'>1</td>
-                    <td>Html</td>
-                    <td>5</td>
-                    <td class='edit'><a href='update-category.html'><i class='fa fa-edit'></i></a></td>
-                    <td class='delete'><a href='delete-category.html'><i class='fa fa-trash-o'></i></a></td>
-                </tr>
-                <tr>
-                    <td class='id'>2</td>
-                    <td>Css</td>
-                    <td>15</td>
-                    <td class='edit'><a href='update-category.html'><i class='fa fa-edit'></i></a></td>
-                    <td class='delete'><a href='delete-category.html'><i class='fa fa-trash-o'></i></a></td>
-                </tr>
-                <tr>
-                    <td class='id'>3</td>
-                    <td>Java</td>
-                    <td>8</td>
-                    <td class='edit'><a href='update-category.html'><i class='fa fa-edit'></i></a></td>
-                    <td class='delete'><a href='delete-category.html'><i class='fa fa-trash-o'></i></a></td>
-                </tr>
-                <tr>
-                    <td class='id'>4</td>
-                    <td>Php</td>
-                    <td>11</td>
-                    <td class='edit'><a href='update-category.html'><i class='fa fa-edit'></i></a></td>
-                    <td class='delete'><a href='delete-category.html'><i class='fa fa-trash-o'></i></a></td>
-                </tr>
-                <tr>
-                    <td class='id'>5</td>
-                    <td>Python</td>
-                    <td>13</td>
-                    <td class='edit'><a href='update-category.html'><i class='fa fa-edit'></i></a></td>
-                    <td class='delete'><a href='delete-category.html'><i class='fa fa-trash-o'></i></a></td>
-                </tr>
-                <tr>
-                    <td class='id'>6</td>
-                    <td>Scss</td>
-                    <td>3</td>
-                    <td class='edit'><a href='update-category.html'><i class='fa fa-edit'></i></a></td>
-                    <td class='delete'><a href='delete-category.html'><i class='fa fa-trash-o'></i></a></td>
-                </tr>
-            </tbody>
-        </table>
-        <nav>
-            <ul class="pagination">
-                <li class="page-item disabled">
-                <a class="page-link">Previous</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active">
-                <a class="page-link" href="#" aria-current="page">2</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-            </nav>
+        <div id="mytable"></div>
     </div>
 </div>
+
+<script src="https://unpkg.com/tabulator-tables@5.5.2/dist/js/tabulator.min.js"></script>
+<script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+        new Tabulator("#mytable", {
+            data: <%- JSON.stringify(categories) %>,
+            layout: "fitColumns",
+            pagination:true,
+            paginationSize:10,
+            paginationSizeSelector:[2,5,10,15],
+            downloadRowRange: "visible",
+            placeholder:"No Data Set",
+            columns:[
+                {title:"S.No.", formatter:"rownum", width:100, hozAlign:"center"},
+                {title:"Name", field:"name", headerFilter:"input"},
+                {title:"Description", field:"description", headerFilter:"input"},
+                {title:"Slug", field:"slug", headerFilter:"input"},
+                {title:"Action", formatter:function(cell, formatterParams, onRendered){
+                    return `<a href="category/edit/${cell.getData()._id}" class="btn btn-info"><i class="fa fa-edit">Edit</i></a>
+                            <a href="javascript:void(0)" onclick="onDelete('${cell.getData()._id}')" class="btn btn-outline-danger"><i class="fa fa-trash-o"></i>Delete</a>`;
+                }},
+                
+            ],
+        });
+    });
+
+    async function onDelete(id){
+        if(confirm('Are you sure?')){
+            const response = await fetch(`/admin/category/delete/${id}`, {
+                method: 'DELETE'
+            })
+            if(response.ok){
+                window.location.reload();
+            }
+        }
+    }
+
+    
+</script>
+
+<%- contentFor('tabulatorCss') %>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<link href="https://unpkg.com/tabulator-tables@6.3.1/dist/css/tabulator.min.css" rel="stylesheet">

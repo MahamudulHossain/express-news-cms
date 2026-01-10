@@ -1,28 +1,32 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+
 const categorySchema = new mongoose.Schema({
-    name:{
+    name: {
         type: String,
-        require: true,
-        unique: true
+        required: true,
+        unique: true,
+        trim: true
     },
-    description:{
-        type: String
-    },
-    slug:{
+    description: {
         type: String,
-        require: true,
-        unique: true
+        trim: true
     },
-    timestamp:{
-        type: Date,
-        default: Date.now
+    slug: {
+        type: String,
+        required: true,
+        unique: true
+    }
+}, { timestamps: true });
+
+categorySchema.pre('validate', function () {
+    if (this.isModified('name') || !this.slug) {
+        this.slug = slugify(this.name, {
+            lower: true,
+            strict: true
+        });
     }
 });
 
-categorySchema.pre('save', function(next){
-    this.slug = slugify(this.name, { lower: true });
-    next();
-});
 
-exports.Category = mongoose.model('Category', categorySchema);
+module.exports = mongoose.model('Category', categorySchema);

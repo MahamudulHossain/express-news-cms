@@ -29,20 +29,20 @@ router.get('/news', newsController.newsIndex);
 router.get('/news/create', newsController.newsCreate);
 router.post('/news/store', newsController.newsStore);
 router.get('/news/edit/:id', newsController.newsEdit);
-router.post('/news/update', newsController.newsUpdate);
-router.get('/news/delete/:id', newsController.newsDelete);
+router.post('/news/update/:id', newsController.newsUpdate);
+router.delete('/news/delete/:id', newsController.newsDelete);
 
 // Category CRUD
 router.get('/category', isAdmin,categoryController.categoryIndex);
 router.get('/category/create', isAdmin,categoryController.categoryCreate);
 router.post('/category/store', isAdmin,categoryController.categoryStore);
 router.get('/category/edit/:id', isAdmin,categoryController.categoryEdit);
-router.post('/category/update', isAdmin,categoryController.categoryUpdate);
-router.get('/category/delete/:id', isAdmin,categoryController.categoryDelete);
+router.post('/category/update/:id', isAdmin,categoryController.categoryUpdate);
+router.delete('/category/delete/:id', isAdmin,categoryController.categoryDelete);
 
 // Comment
 router.get('/comments', commentController.commentIndex);
-router.post('/comments/update', commentController.commentUpdate);
+router.post('/comments/update/:id', commentController.commentUpdate);
 
 // Settings
 router.get('/settings/update', isAdmin,userController.settingsUpdate);
