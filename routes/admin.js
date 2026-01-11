@@ -30,7 +30,6 @@ router.get('/news', newsController.newsIndex);
 router.get('/news/create', newsController.newsCreate);
 router.post('/news/store', upload.single('image'),newsController.newsStore);
 router.get('/news/edit/:id', newsController.newsEdit);
-router.get('/news/single/:id', newsController.singleNews);
 router.post('/news/update/:id', upload.single('image'),newsController.newsUpdate);
 router.delete('/news/delete/:id', newsController.newsDelete);
 
