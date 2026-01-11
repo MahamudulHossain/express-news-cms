@@ -7,6 +7,7 @@ const categoryController = require('../controllers/categoryController')
 const commentController = require('../controllers/commentController')
 const isLoggedIn = require('../middlewares/isLoggedIn')
 const isAdmin = require('../middlewares/isAdmin')
+const upload = require('../middlewares/imageUpload')
 
 // Login
 router.get('/', userController.login);
@@ -27,7 +28,7 @@ router.delete('/user/delete/:id', isAdmin,userController.userDelete);
 // News CRUD
 router.get('/news', newsController.newsIndex);
 router.get('/news/create', newsController.newsCreate);
-router.post('/news/store', newsController.newsStore);
+router.post('/news/store', upload.single('image'),newsController.newsStore);
 router.get('/news/edit/:id', newsController.newsEdit);
 router.post('/news/update/:id', newsController.newsUpdate);
 router.delete('/news/delete/:id', newsController.newsDelete);

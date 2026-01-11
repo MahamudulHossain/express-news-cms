@@ -9,6 +9,7 @@ const isLoggedIn = (req, res, next) => {
         const tokenData = jwt.verify(token, process.env.JWT_SECRET);
         req.role = tokenData.role;
         req.fullname = tokenData.fullname;
+        req.id = tokenData.id;
         res.locals.user = req; // Pass the user data to the view
         next();
     } catch (error) {

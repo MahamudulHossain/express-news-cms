@@ -4,32 +4,29 @@ const paginate = require('mongoose-paginate-v2');
 const newsSchema = new mongoose.Schema({
     title:{
         type: String,
-        require: true,
+        required: true,
     },
     content:{
         type: String,
-        require: true
+        required: true
     },
     category:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
-        require: true
+        required: true
     },
     author:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        require: true
+        required: true
     },
     image:{
         type: String,
-        require: true
-    },
-    timestamp:{
-        type: Date,
-        default: Date.now
+        required: true
     }
-});
+}, { timestamps: true });
 
 newsSchema.plugin(paginate);
 
-exports.News = mongoose.model('News', newsSchema);
+module.exports = mongoose.model('News', newsSchema);
+

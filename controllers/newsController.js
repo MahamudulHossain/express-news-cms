@@ -1,14 +1,29 @@
-const mongoose = require('mongoose');
+const newsModel = require('../models/News');
+const categoryModel = require('../models/Category');
 
 const newsIndex = async(req, res) => {
-    return res.render('admin/article/index');
+    const news = await newsModel.find();
+    return res.render('admin/article/index', {news});
 }
 
 const newsCreate = async(req, res) => {
-    return res.render('admin/article/create');
+    const categories = await categoryModel.find();
+    return res.render('admin/article/create', {categories});
 }
 
 const newsStore = async(req, res) => {
+    try{
+        const {title, category, content} = req.body;
+        const author = req.id;
+        // Image upload
+        const image = req.file.filename;
+        const news = await newsModel.create({title, category, content, author, image});
+        if(news){
+            return res.redirect('/admin/news');
+        }
+    }catch(err){
+        return res.status(500).json({message: err.message});
+    }
     
 }
 
