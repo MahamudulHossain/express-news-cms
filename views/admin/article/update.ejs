@@ -7,24 +7,31 @@
         <h5 class="card-header">Update Article</h5>
         <div class="card-body">
             <!-- Form -->
-            <form action="" method="POST" enctype="multipart/form-data">
+            <form action="/admin/news/update/<%= news.id%>" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="article_title" class="form-label">Title</label>
-                <input type="text" name="title" id="article_title" class="form-control" autocomplete="off" required>
+                <input type="text" value="<%= news.title%>" name="title" id="article_title" class="form-control" autocomplete="off" required>
             </div>
             <div class="mb-3">
                 <label for="summernote" class="form-label">Description</label>
-                <textarea name="content" id="summernote" class="form-control" rows="5"  required></textarea>
+                <textarea name="content" id="summernote" class="form-control" rows="5"  required><%= news.content%></textarea>
             </div>
             <div class="mb-3">
                 <label for="article_category" class="form-label">Category</label>
                 <select name="category" id="article_category" class="form-control">
-                    <option value="" selected> Select Category</option>
+                    <% categories.forEach(category => { %>
+                        <% if(category._id == news.category.id){ %>
+                            <option value="<%= category._id %>" selected><%= category.name %></option>
+                        <% }else{ %>
+                            <option value="<%= category._id %>"><%= category.name %></option>
+                        <% } %>
+                    <% }) %>
                 </select>
             </div>
             <div class="mb-3">
                 <label for="article_image" class="form-label">Article image</label>
-                <input type="file" name="image" id="article_image" class="form-control" required>
+                <input type="file" name="image" id="article_image" class="form-control">
+                <img src="/uploads/<%= news.image%>" alt="<%= news.title%>" class="mt-4" width="300" height="200">
             </div>
             <input type="submit" name="submit" class="btn btn-primary" value="Update" />
             </form>
