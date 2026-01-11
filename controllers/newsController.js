@@ -2,7 +2,7 @@ const newsModel = require('../models/News');
 const categoryModel = require('../models/Category');
 
 const newsIndex = async(req, res) => {
-    const news = await newsModel.find();
+    const news = await newsModel.find().populate('category').populate('author');
     return res.render('admin/article/index', {news});
 }
 
@@ -35,6 +35,10 @@ const newsUpdate = async(req, res) => {
     
 }
 
+const singleNews = async(req, res) => {
+    
+}
+
 const newsDelete = async(req, res) => {
     
 }
@@ -45,6 +49,7 @@ module.exports = {
     newsCreate,
     newsStore,
     newsEdit,
+    singleNews,
     newsUpdate,
     newsDelete
 }
