@@ -3,6 +3,8 @@ const userModel = require('../models/User');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
+const newsModel = require('../models/News');
+const categoryModel = require('../models/Category');
 
 dotenv.config();
 
@@ -26,7 +28,20 @@ const adminLogin = async(req, res) => {
 }
 
 const dashboard = async(req, res) => {
-    return res.render('admin/dashboard');
+    let articleCount = 0;
+    let categoryCount = 0;
+    let userCount = 0;
+    if(req.role === 'admin'){
+        articleCount = await newsModel.countDocuments();
+        categoryCount = await categoryModel.countDocuments();
+        userCount = await userModel.countDocuments();
+    }else{
+        articleCount = await newsModel.countDocuments({author: req.id});
+        userCount = await userModel.countDocuments();
+        categoryCount = await categoryModel.countDocuments();
+    }
+    
+    return res.render('admin/dashboard', {articleCount, categoryCount, userCount});
 }
 
 const logout = async(req, res) => {
