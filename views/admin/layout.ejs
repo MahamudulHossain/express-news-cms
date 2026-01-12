@@ -55,6 +55,9 @@
               <li>
                 <a href="/admin/news">Article</a>
               </li>
+              <li>
+                <a href="/admin/comments">Comments</a>
+              </li>
               <% if (user && user.role === 'admin') { %>
               <li>
                 <a href="/admin/category">Category</a>
@@ -62,13 +65,10 @@
               <li>
                 <a href="/admin/user">Users</a>
               </li>
-              <% } %>
-              <li>
-                <a href="/admin/comments">Comments</a>
-              </li>
               <li>
                 <a href="/admin/settings/update">Settings</a>
               </li>
+              <% } %>
             </ul>
           </div>
         </div>

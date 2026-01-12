@@ -8,6 +8,7 @@ const categoryModel = require('../models/Category');
 const settingModel = require('../models/Setting');
 const path = require('path');
 const fs = require('fs');
+const errorMsg = require('../utils/error-message')
 
 dotenv.config();
 
@@ -19,7 +20,8 @@ const adminLogin = async(req, res) => {
     const {username, password} = req.body;
     const user = await userModel.findOne({username});
     if(!user){
-        return res.status(404).json({message: 'User not found'});
+        next(errorMsg('User not found',404))
+
     }
     const isMatched = await bcrypt.compare(password, user.password);
     if(!isMatched){
@@ -73,7 +75,7 @@ const userStore = async(req, res) => {
             return res.redirect('/admin/user');
         }
     }catch(err){
-        return res.status(500).json({message: err.message});
+        next(errorMsg(err.message,500))
     }
 }
 
@@ -81,11 +83,11 @@ const userEdit = async(req, res) => {
     try{
         const user = await userModel.findById(req.params.id);
         if(!user){
-            return res.status(404).json({message: 'User not found'});
+            next(errorMsg('User not found',404))
         }
         return res.render('admin/user/update', {user});
     }catch(err){
-        return res.status(500).json({message: err.message});
+        next(errorMsg(err.message,500))
     }
 }
 
@@ -93,7 +95,7 @@ const userUpdate = async(req, res) => {
     try{
         const user = await userModel.findById(req.params.id);
         if(!user){
-            return res.status(404).json({message: 'User not found'});
+            next(errorMsg('User not found',404))
         }
         user.fullname = req.body.fullname;
         user.username = req.body.username;
@@ -104,7 +106,7 @@ const userUpdate = async(req, res) => {
         await user.save();
         return res.redirect('/admin/user');
     }catch(err){
-        return res.status(500).json({message: err.message});
+        next(errorMsg(err.message,500))
     }
 }
 
@@ -115,7 +117,7 @@ const userDelete = async(req, res) => {
             return  res.json({msg:true});
         }
     }catch(err){
-        return res.status(500).json({message: err.message});
+        next(errorMsg(err.message,500))
     }
     
 }
@@ -137,7 +139,7 @@ const settingsUpdate = async(req, res) => {
         await settingModel.updateOne({website_title,footer_description});
         return res.redirect('/admin/settings/update');
     }catch(err){
-        return res.status(500).json({message: err.message});
+        next(errorMsg(err.message,500))
     }
 }
 

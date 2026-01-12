@@ -49,4 +49,17 @@ router.post('/comments/update/:id', commentController.commentUpdate);
 router.get('/settings/update', isAdmin,userController.settingsEdit);
 router.post('/settings/update', isAdmin,upload.single('website_logo'),userController.settingsUpdate);
 
+// Basic Error Page
+router.use((req, res, next) => {
+    res.status(404).render('admin/404')
+    next();
+})
+
+// Other Errors
+router.use((err, req, res, next) => {
+    res.render('admin/common-error', {error: err});
+    next();
+})
+
+
 module.exports = router

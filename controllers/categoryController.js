@@ -1,5 +1,7 @@
 const categoryModel = require('../models/Category');
 const slugify = require('slugify');
+const errorMsg = require('../utils/error-message')
+
 const categoryIndex = async (req, res) => {
     const categories = await categoryModel.find();
     return res.render('admin/category/index', {categories});
@@ -9,30 +11,30 @@ const categoryCreate = async (req, res) => {
     return res.render('admin/category/create');
 }
 
-const categoryStore = async (req, res) => { 
+const categoryStore = async (req, res, next) => { 
     try{
         const category = await categoryModel.create(req.body);
         if(category){
             return res.redirect('/admin/category');
         }
     }catch(err){
-        return res.status(500).json({message: err.message});
+        next(errorMsg(err.message,500))
     }
 }
 
-const categoryEdit = async (req, res) => {
+const categoryEdit = async (req, res, next) => {
     try{
         const category = await categoryModel.findById(req.params.id);
         if(!category){
-            return res.status(404).json({message: 'Category not found'});
+            next(errorMsg('Category not found',404))
         }
         return res.render('admin/category/update', {category});
     }catch(err){
-        return res.status(500).json({message: err.message});
+        next(errorMsg(err.message,500))
     }
 }
 
-const categoryUpdate = async (req, res) => {
+const categoryUpdate = async (req, res, next) => {
     try {
         if (req.body.name) {
             req.body.slug = slugify(req.body.name, {
@@ -48,23 +50,23 @@ const categoryUpdate = async (req, res) => {
         );
 
         if (!category) {
-            return res.status(404).json({ message: 'Category not found' });
+            next(errorMsg('Category not found',404))
         }
 
         return res.redirect('/admin/category');
     } catch (err) {
-        return res.status(500).json({ message: err.message });
+        next(errorMsg(err.message,500))
     }
 };
 
-const categoryDelete = async (req, res) => {
+const categoryDelete = async (req, res, next) => {
     try{
         const category = await categoryModel.findByIdAndDelete(req.params.id);
         if(category){
             return  res.json({msg:true});
         }
     }catch(err){
-        return res.status(500).json({message: err.message});
+        next(errorMsg(err.message,500))
     }
     
 }

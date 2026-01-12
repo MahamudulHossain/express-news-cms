@@ -2,10 +2,10 @@ const newsModel = require('../models/News');
 const categoryModel = require('../models/Category');
 const path = require('path');
 const fs = require('fs');
+const errorMsg = require('../utils/error-message')
 
 const newsIndex = async(req, res) => {
     let news;
-    
     if(req.role === 'admin'){
         news = await newsModel.find().populate('category').populate('author');
     }else{
@@ -19,7 +19,7 @@ const newsCreate = async(req, res) => {
     return res.render('admin/article/create', {categories});
 }
 
-const newsStore = async(req, res) => {
+const newsStore = async(req, res,next) => {
     try{
         const {title, category, content} = req.body;
         const author = req.id;
@@ -30,42 +30,43 @@ const newsStore = async(req, res) => {
             return res.redirect('/admin/news');
         }
     }catch(err){
-        return res.status(500).json({message: err.message});
+        // return res.status(500).json({message: err.message});
+        next(errorMsg(err.message,500))
     }
     
 }
 
-const newsEdit = async(req, res) => {
+const newsEdit = async(req, res, next) => {
     try{
         let news;
         news = await newsModel.findById(req.params.id).populate('category');
         if(!news){
-            return res.status(404).json({message: 'News not found'});
+            next(errorMsg('News not found',404))
         }
         //admin check
         if(req.role === 'author'){
             if(req.id !== news.author._id.toString()){
-                return res.status(401).json({message: 'Unauthorized'});
+                next(errorMsg('Unauthorized',401))
             }
         }
         const categories = await categoryModel.find();
         
         return res.render('admin/article/update', {news, categories});
     }catch(err){
-        return res.status(500).json({message: err.message});
+        next(errorMsg(err.message,500))
     }
 }
 
-const newsUpdate = async(req, res) => {
+const newsUpdate = async(req, res, next) => {
     try{
         const news = await newsModel.findById(req.params.id);
         if(!news){
-            return res.status(404).json({message: 'News not found'});
+            next(errorMsg('News not found',404))
         }
         //admin check
         if(req.role === 'author'){
             if(req.id !== news.author._id.toString()){
-                return res.status(401).json({message: 'Unauthorized'});
+                next(errorMsg('Unauthorized',401))
             }
         }
         news.title = req.body.title;
@@ -84,20 +85,21 @@ const newsUpdate = async(req, res) => {
         await news.save();
         return res.redirect('/admin/news');
     }catch(err){
-        return res.status(500).json({message: err.message});
+        next(errorMsg(err.message,500))
+
     }
 }
 
-const newsDelete = async(req, res) => {
+const newsDelete = async(req, res, next) => {
     try{
         const news = await newsModel.findById(req.params.id);
         if(!news){
-            return res.status(404).json({message: 'News not found'});
+            next(errorMsg('News not found',404))
         }
         //admin check
         if(req.role === 'author'){
             if(req.id !== news.author._id.toString()){
-                return res.status(401).json({message: 'Unauthorized'});
+                next(errorMsg('Unauthorized',401))
             }
         }
         // Delete image from uploads
@@ -110,7 +112,7 @@ const newsDelete = async(req, res) => {
             return  res.json({msg:true});
         }
     }catch(err){
-        return res.status(500).json({message: err.message});
+        next(errorMsg(err.message,500))
     }
 }
 
