@@ -46,6 +46,7 @@ router.get('/comments', commentController.commentIndex);
 router.post('/comments/update/:id', commentController.commentUpdate);
 
 // Settings
-router.get('/settings/update', isAdmin,userController.settingsUpdate);
+router.get('/settings/update', isAdmin,userController.settingsEdit);
+router.post('/settings/update', isAdmin,upload.single('website_logo'),userController.settingsUpdate);
 
 module.exports = router

@@ -5,6 +5,9 @@ const dotenv = require('dotenv');
 const bcrypt = require('bcrypt');
 const newsModel = require('../models/News');
 const categoryModel = require('../models/Category');
+const settingModel = require('../models/Setting');
+const path = require('path');
+const fs = require('fs');
 
 dotenv.config();
 
@@ -117,8 +120,25 @@ const userDelete = async(req, res) => {
     
 }
 
+const settingsEdit = async(req, res) => {
+    const setting = await settingModel.findOne();
+    return res.render('admin/settings/update', {setting});
+}
+
 const settingsUpdate = async(req, res) => {
-    return res.render('admin/settings/update');
+    try{
+        const {website_title,footer_description} = req.body;
+        // Image upload
+        if(req.file){
+            const website_logo = req.file.filename;
+            await settingModel.updateOne({website_title,website_logo, footer_description});
+            return res.redirect('/admin/settings/update');
+        }
+        await settingModel.updateOne({website_title,footer_description});
+        return res.redirect('/admin/settings/update');
+    }catch(err){
+        return res.status(500).json({message: err.message});
+    }
 }
 
 module.exports = {
@@ -132,5 +152,6 @@ module.exports = {
     userEdit,
     userUpdate,
     userDelete,
+    settingsEdit,
     settingsUpdate
 }
