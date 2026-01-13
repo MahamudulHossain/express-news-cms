@@ -1,6 +1,7 @@
 const categoryModel = require('../models/Category');
 const slugify = require('slugify');
 const errorMsg = require('../utils/error-message')
+const {validationResult} = require('express-validator');
 
 const categoryIndex = async (req, res) => {
     const categories = await categoryModel.find();
@@ -8,10 +9,14 @@ const categoryIndex = async (req, res) => {
 }
 
 const categoryCreate = async (req, res) => {
-    return res.render('admin/category/create');
+    return res.render('admin/category/create', {errors: []});
 }
 
 const categoryStore = async (req, res, next) => { 
+    const result = validationResult(req);
+    if(!result.isEmpty()){
+        return res.render('admin/category/create', {errors: result.array()});
+    }
     try{
         const category = await categoryModel.create(req.body);
         if(category){
@@ -28,13 +33,21 @@ const categoryEdit = async (req, res, next) => {
         if(!category){
             next(errorMsg('Category not found',404))
         }
-        return res.render('admin/category/update', {category});
+        return res.render('admin/category/update', {category, errors: []});
     }catch(err){
         next(errorMsg(err.message,500))
     }
 }
 
 const categoryUpdate = async (req, res, next) => {
+    const result = validationResult(req);
+    if(!result.isEmpty()){
+        const category = await categoryModel.findById(req.params.id);
+        if(!category){
+            next(errorMsg('Category not found',404))
+        }
+        return res.render('admin/category/update', {category,errors: result.array()});
+    }
     try {
         if (req.body.name) {
             req.body.slug = slugify(req.body.name, {

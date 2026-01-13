@@ -6,6 +6,7 @@
         <div class="card">
             <h5 class="card-header">Update Category</h5>
             <div class="card-body">
+            <%- include('../partials/error-msg') %>
             <!-- Form Start -->
             <form action="/admin/category/update/<%= category.id%>" method="POST" autocomplete="off">
                 <div class="mb-3">

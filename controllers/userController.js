@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const userModel = require('../models/User');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
@@ -9,14 +8,22 @@ const settingModel = require('../models/Setting');
 const path = require('path');
 const fs = require('fs');
 const errorMsg = require('../utils/error-message')
+const {validationResult} = require('express-validator');
 
 dotenv.config();
 
 const login = async(req, res) => {
-    return res.render('admin/login', {layout: false});
+    return res.render('admin/login', {layout: false,errors: []});
 }
 
 const adminLogin = async(req, res) => {
+    const result = validationResult(req);
+    if(!result.isEmpty()){
+        return res.render('admin/login', {
+            errors: result.array(), 
+            layout: false
+        });
+    }
     const {username, password} = req.body;
     const user = await userModel.findOne({username});
     if(!user){

@@ -8,10 +8,11 @@ const commentController = require('../controllers/commentController')
 const isLoggedIn = require('../middlewares/isLoggedIn')
 const isAdmin = require('../middlewares/isAdmin')
 const upload = require('../middlewares/imageUpload')
+const isValid = require('../middlewares/validation')
 
 // Login
 router.get('/', userController.login);
-router.post('/login', userController.adminLogin);
+router.post('/login', isValid.logInValidation,userController.adminLogin);
 
 router.use(isLoggedIn);
 router.get('/dashboard', userController.dashboard);
@@ -36,9 +37,9 @@ router.delete('/news/delete/:id', newsController.newsDelete);
 // Category CRUD
 router.get('/category', isAdmin,categoryController.categoryIndex);
 router.get('/category/create', isAdmin,categoryController.categoryCreate);
-router.post('/category/store', isAdmin,categoryController.categoryStore);
+router.post('/category/store', isAdmin,isValid.categoryValidation,categoryController.categoryStore);
 router.get('/category/edit/:id', isAdmin,categoryController.categoryEdit);
-router.post('/category/update/:id', isAdmin,categoryController.categoryUpdate);
+router.post('/category/update/:id', isAdmin,isValid.categoryValidation,categoryController.categoryUpdate);
 router.delete('/category/delete/:id', isAdmin,categoryController.categoryDelete);
 
 // Comment
