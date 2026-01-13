@@ -21,17 +21,17 @@ router.get('/logout', userController.logout);
 // User CRUD
 router.get('/user', isAdmin,userController.userIndex);
 router.get('/user/create', isAdmin,userController.userCreate);
-router.post('/user/store', isAdmin,userController.userStore);
+router.post('/user/store', isAdmin,isValid.userAddValidation,userController.userStore);
 router.get('/user/edit/:id', isAdmin,userController.userEdit);
-router.post('/user/update/:id', isAdmin,userController.userUpdate);
+router.post('/user/update/:id', isAdmin,isValid.userUpdateValidation,userController.userUpdate);
 router.delete('/user/delete/:id', isAdmin,userController.userDelete);
 
 // News CRUD
 router.get('/news', newsController.newsIndex);
 router.get('/news/create', newsController.newsCreate);
-router.post('/news/store', upload.single('image'),newsController.newsStore);
+router.post('/news/store', upload.single('image'),isValid.articleValidation,newsController.newsStore);
 router.get('/news/edit/:id', newsController.newsEdit);
-router.post('/news/update/:id', upload.single('image'),newsController.newsUpdate);
+router.post('/news/update/:id', upload.single('image'),isValid.articleValidation,newsController.newsUpdate);
 router.delete('/news/delete/:id', newsController.newsDelete);
 
 // Category CRUD

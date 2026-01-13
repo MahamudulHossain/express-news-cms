@@ -71,10 +71,14 @@ const userIndex = async(req, res) => {
 }
 
 const userCreate = async(req, res) => {
-    return res.render('admin/user/create');
+    return res.render('admin/user/create', {errors: []});
 }
 
 const userStore = async(req, res) => {
+    const result = validationResult(req);
+    if(!result.isEmpty()){
+        return res.render('admin/user/create', {errors: result.array()});
+    }
     try{
         const {fullname,username, password, role} = req.body;
         const user = await userModel.create({fullname, username, password, role});
@@ -92,13 +96,21 @@ const userEdit = async(req, res) => {
         if(!user){
             next(errorMsg('User not found',404))
         }
-        return res.render('admin/user/update', {user});
+        return res.render('admin/user/update', {user, errors: []});
     }catch(err){
         next(errorMsg(err.message,500))
     }
 }
 
 const userUpdate = async(req, res) => {
+    const result = validationResult(req);
+    if(!result.isEmpty()){
+        const user = await userModel.findById(req.params.id);
+        if(!user){
+            next(errorMsg('User not found',404))
+        }
+        return res.render('admin/user/update', {user, errors: result.array()});
+    }
     try{
         const user = await userModel.findById(req.params.id);
         if(!user){

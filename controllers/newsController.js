@@ -3,6 +3,7 @@ const categoryModel = require('../models/Category');
 const path = require('path');
 const fs = require('fs');
 const errorMsg = require('../utils/error-message')
+const {validationResult} = require('express-validator');
 
 const newsIndex = async(req, res) => {
     let news;
@@ -16,10 +17,15 @@ const newsIndex = async(req, res) => {
 
 const newsCreate = async(req, res) => {
     const categories = await categoryModel.find();
-    return res.render('admin/article/create', {categories});
+    return res.render('admin/article/create', {categories, errors: []});
 }
 
 const newsStore = async(req, res,next) => {
+    const result = validationResult(req);
+    if(!result.isEmpty()){
+        const categories = await categoryModel.find();
+        return res.render('admin/article/create', {categories, errors: result.array()});
+    }
     try{
         const {title, category, content} = req.body;
         const author = req.id;
@@ -51,13 +57,28 @@ const newsEdit = async(req, res, next) => {
         }
         const categories = await categoryModel.find();
         
-        return res.render('admin/article/update', {news, categories});
+        return res.render('admin/article/update', {news, categories, errors: []});
     }catch(err){
         next(errorMsg(err.message,500))
     }
 }
 
 const newsUpdate = async(req, res, next) => {
+    const result = validationResult(req);
+    if(!result.isEmpty()){
+        const news = await newsModel.findById(req.params.id);
+        if(!news){
+            next(errorMsg('News not found',404))
+        }
+        //admin check
+        if(req.role === 'author'){
+            if(req.id !== news.author._id.toString()){
+                next(errorMsg('Unauthorized',401))
+            }
+        }
+        const categories = await categoryModel.find();
+        return res.render('admin/article/update', {news, categories, errors: result.array()});
+    }
     try{
         const news = await newsModel.findById(req.params.id);
         if(!news){
