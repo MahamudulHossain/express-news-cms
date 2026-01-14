@@ -25,12 +25,17 @@ const adminLogin = async(req, res) => {
     const {username, password} = req.body;
     const user = await userModel.findOne({username});
     if(!user){
-        next(errorMsg('User not found',404))
-
+        return res.render('admin/login', {
+            layout: false,
+            errors: [{msg: 'Invalid Credentials'}]
+        });
     }
     const isMatched = await bcrypt.compare(password, user.password);
     if(!isMatched){
-        return res.status(401).json({message: 'Invalid Password'});
+        return res.render('admin/login', {
+            layout: false,
+            errors: [{msg: 'Invalid Credentials'}]
+        });
     }
     const token = jwt.sign({id: user._id, fullname: user.fullname,role: user.role}, process.env.JWT_SECRET, {expiresIn: '1d'});
     res.cookie('token', token, {httpOnly: true, maxAge: 60 * 60 * 1000});
