@@ -1,4 +1,5 @@
 const categoryModel = require('../models/Category');
+const newsModel = require('../models/News');
 const slugify = require('slugify');
 const errorMsg = require('../utils/error-message')
 const {validationResult} = require('express-validator');
@@ -74,9 +75,17 @@ const categoryUpdate = async (req, res, next) => {
 
 const categoryDelete = async (req, res, next) => {
     try{
-        const category = await categoryModel.findByIdAndDelete(req.params.id);
-        if(category){
+        const category = await categoryModel.findById(req.params.id);
+        if(!category){
+            next(errorMsg('Category not found',404))
+        }
+        // Delete if No article added with this category
+        const news = await newsModel.findOne({category: req.params.id});
+        if(!news){
+            await categoryModel.findByIdAndDelete(req.params.id);
             return  res.json({msg:true});
+        }else{
+            return  res.status(400).json({msg:'Category is associated with articles.'});
         }
     }catch(err){
         next(errorMsg(err.message,500))

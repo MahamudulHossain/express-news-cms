@@ -45,6 +45,10 @@
             if(response.ok){
                 window.location.reload();
             }
+            if(response.status === 400){
+                const error = await response.json();
+                alert(error.msg);
+            }
         }
     }
 

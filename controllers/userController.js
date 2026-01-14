@@ -5,8 +5,6 @@ const bcrypt = require('bcrypt');
 const newsModel = require('../models/News');
 const categoryModel = require('../models/Category');
 const settingModel = require('../models/Setting');
-const path = require('path');
-const fs = require('fs');
 const errorMsg = require('../utils/error-message')
 const {validationResult} = require('express-validator');
 
@@ -131,9 +129,17 @@ const userUpdate = async(req, res) => {
 
 const userDelete = async(req, res) => {
     try{
-        const user = await userModel.findByIdAndDelete(req.params.id);
-        if(user){
+        const user = await userModel.findById(req.params.id);
+        if(!user){
+            next(errorMsg('User not found',404))
+        }
+        const news = await newsModel.findOne({author: req.params.id});
+        // console.log(news)
+        if(news == null){
+            await userModel.findByIdAndDelete(req.params.id);
             return  res.json({msg:true});
+        }else{
+            return  res.status(400).json({msg:'User is associated with articles.'});
         }
     }catch(err){
         next(errorMsg(err.message,500))
