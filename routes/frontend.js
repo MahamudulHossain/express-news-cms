@@ -7,7 +7,7 @@ router.get('/', siteController.index);
 router.get('/author/:id', siteController.newsByAuthor);
 router.get('/category/:slug', siteController.newsByCategory);
 router.get('/single/:id', siteController.singleNews);
-router.get('/search/:id', siteController.searchNews);
+router.get('/search', siteController.searchNews);
 router.post('/single/:id', siteController.addComment);
 
 module.exports = router
