@@ -2,6 +2,9 @@ const express = require('express')
 const router = express.Router()
 
 const siteController = require('../controllers/siteController')
+const frontendCommon = require('../middlewares/frontendCommon')
+
+router.use(frontendCommon);
 
 router.get('/', siteController.index);
 router.get('/author/:id', siteController.newsByAuthor);
