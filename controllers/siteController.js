@@ -2,13 +2,9 @@ const newsModel = require('../models/News');
 const categoryModel = require('../models/Category');
 const userModel = require('../models/User');
 const paginate = require('../utils/paginate');
+const { query } = require('express-validator');
 
 const index = async(req, res) => {
-    // const news = await newsModel.find()
-    //                             .populate('category',{'name':1,'slug':1})
-    //                             .populate('author','fullname')
-    //                             .sort({createdAt: -1});     
-    
     const paginatedNews = await paginate(newsModel, {}, req.query, {
         populate: [
             {path: 'category', select: 'name slug'},
@@ -16,7 +12,7 @@ const index = async(req, res) => {
         ]
     });
     // return res.json(paginatedNews);
-    return res.render('index', {paginatedNews});
+    return res.render('index', {paginatedNews, urlQuery: req.query});
 }
 
 const newsByCategory = async(req, res) => {
@@ -31,7 +27,7 @@ const newsByCategory = async(req, res) => {
             {path: 'author', select: 'fullname'}
         ]
     })
-    return res.render('category', {paginatedNews,slug});
+    return res.render('category', {paginatedNews,slug, urlQuery: req.query});
 }
 
 const newsByAuthor = async(req, res) => {
@@ -46,7 +42,7 @@ const newsByAuthor = async(req, res) => {
             {path: 'author', select: 'fullname'}
         ]
     })
-    return res.render('author', {paginatedNews,author});
+    return res.render('author', {paginatedNews,author, urlQuery: req.query});
     
 }
 
@@ -62,13 +58,9 @@ const singleNews = async(req, res) => {
 
 const searchNews = async(req, res) => {
     const keyword = req.query.search;
-    // const news = await newsModel.find({$or: [
-    //                                     {title: {$regex: keyword, $options: 'i'}}, 
-    //                                     {content: {$regex: keyword, $options: 'i'}}
-    //                                 ]})
-    //                             .populate('category',{'name':1,'slug':1})
-    //                             .populate('author','fullname')
-    //                             .sort({createdAt: -1});     
+    if(!keyword){
+        return res.redirect('/');
+    }
     
     const paginatedNews = await paginate(newsModel, {$or: [
         {title: {$regex: keyword, $options: 'i'}}, 
@@ -79,7 +71,7 @@ const searchNews = async(req, res) => {
             {path: 'author', select: 'fullname'}
         ]
     });
-    return res.render('search', {paginatedNews,keyword});
+    return res.render('search', {paginatedNews,keyword, urlQuery: req.query});
 }
 
 const addComment = async(req, res) => {

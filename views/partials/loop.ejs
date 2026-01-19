@@ -34,11 +34,19 @@
         </div>
     <% }) %>
 
+    <%
+        function buildQueryString(query, page){
+            const param = new URLSearchParams(query);
+            param.set('page', page);
+            return '?' + param.toString();
+        }
+    %>
+
     <nav>
         <ul class="pagination">
             <% if(paginatedNews.hasPrevPage){ %>
             <li class="page-item">
-                <a class="page-link" href="/?page=<%= paginatedNews.prevPage%>">Previous</a>
+                <a class="page-link" href="<%= buildQueryString(urlQuery, paginatedNews.prevPage)%>">Previous</a>
             </li>
             <% }else{ %>
             <li class="page-item disabled">
@@ -48,13 +56,13 @@
 
             <% for(let i=1; i<= paginatedNews.totalPages; i++){ %>
             <li class="page-item <%= i == paginatedNews.page ? 'active' : '' %>">
-                <a class="page-link" href="/?page=<%= i%>"><%= i%></a>
+                <a class="page-link" href="<%= buildQueryString(urlQuery, i) %>"><%= i %></a>
             </li>
             <% } %>
 
             <% if(paginatedNews.hasNextPage){ %>
             <li class="page-item">
-                <a class="page-link" href="/?page=<%= paginatedNews.nextPage%>">Next</a>
+                <a class="page-link" href="<%= buildQueryString(urlQuery, paginatedNews.nextPage)%>">Next</a>
             </li>
             <% }else{ %>
             <li class="page-item disabled">
