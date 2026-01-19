@@ -1,3 +1,4 @@
+<% news = paginatedNews.docs; %>
 <% news.forEach((article)=>{ %>
         <div class="post-content">
             <div class="row">
@@ -32,3 +33,33 @@
             </div>
         </div>
     <% }) %>
+
+    <nav>
+        <ul class="pagination">
+            <% if(paginatedNews.hasPrevPage){ %>
+            <li class="page-item">
+                <a class="page-link" href="/?page=<%= paginatedNews.prevPage%>">Previous</a>
+            </li>
+            <% }else{ %>
+            <li class="page-item disabled">
+                <a class="page-link">Previous</a>
+            </li>
+            <% } %>
+
+            <% for(let i=1; i<= paginatedNews.totalPages; i++){ %>
+            <li class="page-item <%= i == paginatedNews.page ? 'active' : '' %>">
+                <a class="page-link" href="/?page=<%= i%>"><%= i%></a>
+            </li>
+            <% } %>
+
+            <% if(paginatedNews.hasNextPage){ %>
+            <li class="page-item">
+                <a class="page-link" href="/?page=<%= paginatedNews.nextPage%>">Next</a>
+            </li>
+            <% }else{ %>
+            <li class="page-item disabled">
+                <a class="page-link">Next</a>
+            </li>
+            <% } %>
+        </ul>
+    </nav>
