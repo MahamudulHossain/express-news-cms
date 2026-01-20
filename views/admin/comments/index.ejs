@@ -52,7 +52,7 @@
 
     async function onDelete(id){
         if(confirm('Are you sure?')){
-            const response = await fetch(`/admin/news/delete/${id}`, {
+            const response = await fetch(`/admin/comment/delete/${id}`, {
                 method: 'DELETE'
             })
             if(response.ok){
