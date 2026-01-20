@@ -44,7 +44,8 @@ router.delete('/category/delete/:id', isAdmin,categoryController.categoryDelete)
 
 // Comment
 router.get('/comments', commentController.commentIndex);
-router.post('/comments/update/:id', commentController.commentUpdate);
+router.put('/comments/update/:id', commentController.commentUpdate);
+router.delete('/comments/delete/:id', commentController.commentDelete);
 
 // Settings
 router.get('/settings/update', isAdmin,userController.settingsEdit);

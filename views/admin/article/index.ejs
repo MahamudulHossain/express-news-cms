@@ -28,7 +28,7 @@
                 {title:"Category", field:"category.name", headerFilter:"input"},
                 {title:"Author", field:"author.fullname", headerFilter:"input"},
                 {title:"Action", formatter:function(cell, formatterParams, onRendered){
-                    return `</a> <a href="news/edit/${cell.getData()._id}" class="btn btn-info"><i class="fa fa-edit">Edit</i></a>
+                    return `<a href="news/edit/${cell.getData()._id}" class="btn btn-info"><i class="fa fa-edit">Edit</i></a>
                             <a href="javascript:void(0)" onclick="onDelete('${cell.getData()._id}')" class="btn btn-outline-danger"><i class="fa fa-trash-o"></i>Delete</a>`;
                 }},
                 
