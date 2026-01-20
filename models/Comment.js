@@ -3,26 +3,26 @@ const commentSchema = new mongoose.Schema({
     news:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'News',
-        require: true
+        required: true
     },
     name:{
         type: String,
-        require: true
+        required: true
     },
     email:{
         type: String,
-        require: true,
+        required: true,
     },
     content:{
         type: String,
-        require: true
+        required: true
     },
     status:{
         type: String,
         enum: ['pending','approved','rejected'],
         default: 'pending',
-        require: true
+        required: true
     }
-});
+}, { timestamps: true });
 
-exports.Comment = mongoose.model('Comment', commentSchema);
+module.exports = mongoose.model('Comment', commentSchema);

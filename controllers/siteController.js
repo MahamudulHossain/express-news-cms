@@ -1,6 +1,7 @@
 const newsModel = require('../models/News');
 const categoryModel = require('../models/Category');
 const userModel = require('../models/User');
+const commentModel = require('../models/Comment');
 const paginate = require('../utils/paginate');
 const { query } = require('express-validator');
 
@@ -52,8 +53,12 @@ const singleNews = async(req, res) => {
                                 .populate('author','fullname');
     if(!news){
         return res.status(400).json({message: 'News not found'});
-    };                              
-    return res.render('single', {news});
+    };
+    
+    // fetching approved comments
+    const comments = await commentModel.find({news: news._id, status: 'approved'});
+    // res.json(comments);
+    return res.render('single', {news,comments});
 }
 
 const searchNews = async(req, res) => {
@@ -75,7 +80,17 @@ const searchNews = async(req, res) => {
 }
 
 const addComment = async(req, res) => {
-    
+    try {
+        const news = await newsModel.findById(req.params.id);
+        if(!news){
+            return res.status(400).json({message: 'News not found'});
+        };
+
+        const comment = await commentModel.create({...req.body, news: news._id});
+        return res.redirect(`/single/${req.params.id}`);
+    } catch (error) {
+        return res.status(500).json({message: error.message});
+    }
 }
 
 module.exports = {
