@@ -6,6 +6,19 @@
         <div id="mytable"></div>
     </div>
 </div>
+<div class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="https://unpkg.com/tabulator-tables@5.5.2/dist/js/tabulator.min.js"></script>
 <script>
@@ -42,7 +55,7 @@
                     }
                 },
                 {title:"Action", formatter:function(cell, formatterParams, onRendered){
-                    return `<a href="javascript:void(0)" onclick="onView('${cell.getData()._id}')" class="btn btn-info btn-sm"><i class="fa fa-edit">View</i></a>
+                    return `<a href="javascript:void(0)" onclick="onUpdate('${cell.getData()._id}')" class="btn btn-info btn-sm"><i class="fa fa-edit">Update</i></a>
                             <a href="javascript:void(0)" onclick="onDelete('${cell.getData()._id}')" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash-o"></i>Delete</a>`;
                 }},
                 
@@ -59,6 +72,72 @@
                 window.location.reload();
             }
         }
+    }
+
+    // Using bootstrap modal to show and update comments
+    async function onUpdate(id){
+        const comment = comments.find(comment => comment._id === id);
+
+        document.querySelector('.modal-title').innerHTML = "Update Comment";
+        
+        document.querySelector('.modal-body').innerHTML = `
+            <form id="updateCommentForm">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" value="${comment.name}" disabled>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" value="${comment.email}" disabled>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Comment</label>
+                    <textarea class="form-control" rows="3" disabled>${comment.content}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-control" name="status">
+                        <option value="pending" ${comment.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="approved" ${comment.status === 'approved' ? 'selected' : ''}>Approved</option>
+                        <option value="rejected" ${comment.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary float-end">Update Comment</button>
+            </form>`;
+
+            document.getElementById('updateCommentForm')
+                .addEventListener('submit', async function (e) {
+                    e.preventDefault();
+
+                    const formData = new FormData(this);
+
+                    const res = await fetch(`/admin/comment/update/${id}`, {
+                        method: 'POST',
+                        body: new URLSearchParams(formData)
+                    });
+
+                    const data = await res.json();
+
+                    if (data.msg === true) {
+                        // ✅ Close modal
+                        const modalEl = document.querySelector('.modal');
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        modal.hide();
+
+                        // ✅ Option 1: Refresh page
+                        location.reload();
+
+                        // ✅ Option 2 (better): Update UI without reload
+                        // updateCommentStatusInDOM(id, formData.get('status'));
+                    }
+                });
+        
+        const modal = new bootstrap.Modal(document.querySelector('.modal'));
+        modal.show();
     }
 
     

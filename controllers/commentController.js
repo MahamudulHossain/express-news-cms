@@ -4,10 +4,9 @@ const newsModel = require('../models/News');
 const commentIndex = async(req, res) => {
     let comments;
     if(req.role === 'admin'){
-        comments = await commentModel.find().populate('news','content');
+        comments = await commentModel.find().populate('news','content').sort({ createdAt: -1 });
     }else{
-        const news = await newsModel.findById(req.id);
-
+        const news = await newsModel.find({author: req.id});
         const newsIds = news?.map(news => news._id.toString());
         comments = await commentModel.find({news: {$in: newsIds}}).populate('news');
     }
@@ -16,7 +15,16 @@ const commentIndex = async(req, res) => {
 }
 
 const commentUpdate = async(req, res) => {
-
+    try{
+        const comment = await commentModel.findByIdAndUpdate(req.params.id, req.body);
+        if(comment){
+            return res.json({msg: true});
+        }else{
+            return res.status(400).json({msg: 'Comment not found'});
+        }
+    }catch(err){
+        return res.status(500).json({message: err.message});
+    }
 }
 
 const commentDelete = async(req, res) => {
