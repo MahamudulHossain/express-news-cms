@@ -36,7 +36,6 @@ const newsStore = async(req, res,next) => {
             return res.redirect('/admin/news');
         }
     }catch(err){
-        // return res.status(500).json({message: err.message});
         next(errorMsg(err.message,500))
     }
     

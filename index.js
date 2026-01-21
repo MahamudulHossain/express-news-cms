@@ -11,17 +11,14 @@ require('dotenv').config();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(expressLayouts);
 app.set('layout', 'layout');
 app.use(flash());
 app.use(cookieParser());
 
-
 mongoose.connect(process.env.MONGO_URL);
-
-app.use('/', require('./routes/frontend'));
 
 const adminLayoutMiddleware = (req, res, next) => {
     res.locals.layout = 'admin/layout'; 
@@ -31,7 +28,7 @@ const adminLayoutMiddleware = (req, res, next) => {
 // Apply it to all routes starting with /admin
 app.use('/admin', adminLayoutMiddleware, require('./routes/admin'));
 
-
+app.use('/', require('./routes/frontend'));
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
  console.log(`Example app listening on port ${port}`);

@@ -63,7 +63,7 @@ const articleValidation = [
         .trim(),
     body('content')
         .notEmpty().withMessage("Content is required")
-        .isLength({ min: 100, max: 1000 }).withMessage("Content must be between 100 and 1000 characters long")
+        .isLength({ min: 100 }).withMessage("Content must be at least 100 characters long")
         .trim()
 ];
 
