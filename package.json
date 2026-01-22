@@ -18,6 +18,7 @@
     "ejs": "^3.1.10",
     "express": "^5.2.1",
     "express-ejs-layouts": "^2.5.1",
+    "express-minify-html-terser": "^1.0.2",
     "express-session": "^1.18.2",
     "express-validator": "^7.3.1",
     "jsonwebtoken": "^9.0.3",

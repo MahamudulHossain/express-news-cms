@@ -5,7 +5,9 @@ const path = require('path');
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
 const expressLayouts = require('express-ejs-layouts');
+var minifyHTML = require('express-minify-html-terser');
 require('dotenv').config();
+
 
 
 app.set('views', path.join(__dirname, 'views'));
@@ -17,6 +19,19 @@ app.use(expressLayouts);
 app.set('layout', 'layout');
 app.use(flash());
 app.use(cookieParser());
+
+app.use(minifyHTML({
+    override:      true,
+    exception_url: false,
+    htmlMinifier: {
+        removeComments:            true,
+        collapseWhitespace:        true,
+        collapseBooleanAttributes: true,
+        removeAttributeQuotes:     true,
+        removeEmptyAttributes:     true,
+        minifyJS:                  true
+    }
+}));
 
 mongoose.connect(process.env.MONGO_URL);
 
